@@ -86,11 +86,31 @@
     <script src="/node/socket.io.js"></script>
     <script>
     const socket = io.connect('http://192.168.43.57:3000');
-    socket.on('connect', () => {
-        console.log('connected');
-    });
     let name = '';
     let tempName = '';
+    updateStatus('Connecting');
+    socket.on('connect', () => {
+        console.log('connected');
+        if (name=='') {
+            return;
+        }
+        socket.emit('login', name, loginCallback);
+        updateStatus('Connected');
+    });
+    socket.on('disconnected', () => {
+        updateStatus('Disconnected');
+    });
+    socket.on('reconnecting', () => {
+        updateStatus('Connecting');
+    });
+    function updateStatus(status){
+        $('#currentStatus').text(status);
+        if (status==='Connected') {
+            $('.btn-connected-state').prop('disabled', false);
+        }else{
+            $('.btn-connected-state').prop('disabled', true);
+        }
+    }
 
     $('#formAccount').submit(function(e){
         e.preventDefault();
