@@ -133,6 +133,29 @@
     function updateUsersOnline(){
         $('#onlineMember').text($('.member').children().length);
     }
+
+    socket.on('removeUser', function(removedMember){
+        if (removedMember=='') {
+            return;
+        }
+        if (removedMember == name) {
+            $('#formMessage').addClass('d-none');
+            $('#formAccount').removeClass('d-none');
+            $('#logout').addClass('d-none');
+        }
+        $('.member li:contains("' + removedMember + '")').remove();
+        updateUsersOnline();
+    });
+
+    function logout(){
+        socket.emit('logout');
+        if (name=='') {
+            return;
+        }
+        $('.member li:contains("' + name + '")').remove();
+        $('#logout').addClass('d-none');
+        updateUsersOnline();
+    }
     </script>
 </body>
 </html>
