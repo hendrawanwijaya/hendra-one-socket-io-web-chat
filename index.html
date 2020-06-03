@@ -81,5 +81,14 @@
             </div>
         </div>
     </div>
+    <script src="/node/jquery.js"></script>
+    <script src="/node/js/bootstrap.js"></script>
+    <script src="/node/socket.io.js"></script>
+    <script>
+    const socket = io.connect('http://192.168.43.57:3000');
+    socket.on('connect', () => {
+        console.log('connected');
+    });
+    </script>
 </body>
 </html>
