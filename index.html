@@ -91,11 +91,11 @@
     updateStatus('Connecting');
     socket.on('connect', () => {
         console.log('connected');
+        updateStatus('Connected');
         if (name=='') {
             return;
         }
         socket.emit('login', name, loginCallback);
-        updateStatus('Connected');
     });
     socket.on('disconnected', () => {
         updateStatus('Disconnected');
@@ -176,6 +176,30 @@
         $('#logout').addClass('d-none');
         updateUsersOnline();
     }
+
+    $('#formMessage').submit(function(e){
+        e.preventDefault();
+        if ($('#message').val()=='') {
+            return false;
+        }
+        var msg = {
+            message: $('#message').val(),
+            name: name
+        }
+        socket.emit('newMessage', msg);
+        $('#message').val('');
+        return false;
+    });
+
+    socket.on('newMessage', function(msg){
+        if (msg.name==name) {
+            $('.messages').append($(`<div class="clearfix mb-1 message"><div class="float-right bg-primary text-white rounded p-2 text-right"><strong>${msg.name}</strong><br>${msg.message}</div></div>`));
+        }else{
+            $('.messages').append($(`<div class="clearfix mb-1 message"><div class="float-left bg-warning text-white rounded p-2 text-left"><strong>${msg.name}</strong><br>${msg.message}</div></div>`));
+        }
+        $('.message').fadeIn(500);
+        $(".messages").animate({scrollTop: ($(".messages")[0].scrollHeight)}, 200);
+    });
     </script>
 </body>
 </html>
