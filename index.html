@@ -89,6 +89,50 @@
     socket.on('connect', () => {
         console.log('connected');
     });
+    let name = '';
+    let tempName = '';
+
+    $('#formAccount').submit(function(e){
+        e.preventDefault();
+        if ($('#accountName').val()=='') {
+            return false;
+        }
+        tempName = $('#accountName').val() + '#' + Math.floor(Math.random() * 10000);
+        socket.emit('login', tempName, loginCallback);
+        return false;
+    });
+
+    function loginCallback(status){
+        if (status=='success') {
+            $('#logout').removeClass('d-none');
+            $('#accountName').val('');
+            $('#formMessage').removeClass('d-none');
+            $('#formAccount').addClass('d-none');
+            $('#logout').removeClass('d-none');
+            name = tempName;
+            tempName = '';
+        }else{
+            tempName = $('#accountName').val() + '#' + Math.floor(Math.random() * 10000);
+            socket.emit('login', tempName, loginCallback);
+        }
+    }
+
+    socket.on('users', function(users){
+        $('.member').empty();
+        for (var u of users) {
+            $('.member').append($('<li>').text(u));
+            updateUsersOnline();
+        }
+    });
+
+    socket.on('newUser', function(newUser){
+        $('.member').append($('<li>').text(newUser));
+        updateUsersOnline();
+    });
+
+    function updateUsersOnline(){
+        $('#onlineMember').text($('.member').children().length);
+    }
     </script>
 </body>
 </html>
