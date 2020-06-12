@@ -183,6 +183,7 @@
             return false;
         }
         var msg = {
+            id: Date.now() + name.split('#').pop(),
             message: $('#message').val(),
             name: name
         }
